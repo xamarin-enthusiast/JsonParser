@@ -1,10 +1,9 @@
-using System;
+using Sprache;
 
 namespace JsonParser
 {
     public static class Json
     {
-        // TODO: make this work
-        public static JsonToken Parse(string json) => throw new NotImplementedException();
+        public static JsonToken Parse(string json) => JsonGrammar.JsonToken.Parse(json);
     }
 }
