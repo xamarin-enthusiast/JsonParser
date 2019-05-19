@@ -10,7 +10,7 @@ namespace JsonParser
             throw new InvalidOperationException($"{GetType().Name} is not a container type.");
 
         public virtual T GetValue<T>() =>
-            throw new InvalidOperationException($"{GetType().Name} cannot be converted to {typeof(T).GetType().Name}.");
+            throw new InvalidOperationException($"{GetType().Name} cannot be converted to {typeof(T).Name}.");
 
         public JsonToken this[int index] => GetChild(index);
 
