@@ -15,18 +15,20 @@ namespace JsonParser
         public static readonly Parser<JsonBoolean> JsonBoolean = TrueJsonBoolean.Or(FalseJsonBoolean);
 
         public static readonly Parser<JsonInteger> JsonInteger =
-            from minus in Parse.String("-").Text().Optional()
+            from minus in Parse.Char('-').Once().Text().Optional()
             from digits in Parse.Digit.AtLeastOnce().Text()
             let str = minus.GetOrDefault() + digits
-            select new JsonInteger(int.Parse(str, CultureInfo.InvariantCulture));
+            let value = int.Parse(str, CultureInfo.InvariantCulture)
+            select new JsonInteger(value);
 
         public static readonly Parser<JsonFloatingPoint> JsonFloatingPoint =
-            from minus in Parse.String("-").Text().Optional()
+            from minus in Parse.Char('-').Once().Text().Optional()
             from digitsInt in Parse.Digit.AtLeastOnce().Text()
-            from separator in Parse.String(".").Text()
+            from separator in Parse.Char('.').Once().Text()
             from digitsFrac in Parse.Digit.AtLeastOnce().Text()
             let str = minus.GetOrDefault() + digitsInt + separator + digitsFrac
-            select new JsonFloatingPoint(double.Parse(str, CultureInfo.InvariantCulture));
+            let value = double.Parse(str, CultureInfo.InvariantCulture)
+            select new JsonFloatingPoint(value);
 
         public static readonly Parser<JsonString> JsonString =
             from quoteOpen in Parse.Char('"')
@@ -35,7 +37,7 @@ namespace JsonParser
             select new JsonString(str);
 
         public static readonly Parser<JsonProperty> JsonProperty =
-            from name in JsonString.Token().Select(j => j.Value)
+            from name in JsonString.Select(j => j.Value).Token()
             from colon in Parse.Char(':')
             from value in JsonToken.Token()
             select new JsonProperty(name, value);
